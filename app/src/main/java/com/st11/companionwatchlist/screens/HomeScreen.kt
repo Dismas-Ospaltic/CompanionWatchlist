@@ -51,6 +51,7 @@ import com.st11.companionwatchlist.utils.DynamicStatusBar
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.regular.ThumbsUp
 import compose.icons.fontawesomeicons.regular.TrashAlt
 import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.CircleNotch
@@ -607,6 +608,25 @@ fun HomeScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "Share Watchlist", fontSize = 16.sp)
+                    }
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+
+                            }
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Regular.ThumbsUp,
+                            contentDescription = "Mark as complete",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(text = "Mark as complete", fontSize = 16.sp)
                     }
                 }
 //                Button(
