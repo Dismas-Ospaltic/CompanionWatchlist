@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import com.st11.companionwatchlist.navigation.Screen
 import com.st11.companionwatchlist.screens.components.CircularPercentageBar
+import com.st11.companionwatchlist.screens.components.UpdateStatusPopup
 import com.st11.companionwatchlist.utils.DynamicStatusBar
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
@@ -85,7 +86,7 @@ fun HomeScreen(navController: NavController) {
 //    var selectedBook by remember { mutableStateOf<Book?>(null) }
 
     val selectedWishes = remember { mutableStateOf<Set<String>>(emptySet()) }
-
+    var showDialog by remember { mutableStateOf(false) }
 
     val books = listOf(
         Book("The Name of the Wind", 662, "Fiction", "Fantasy"),
@@ -528,7 +529,7 @@ fun HomeScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
+                                showDialog = true // Just trigger the flag
                             }
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -540,6 +541,15 @@ fun HomeScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(text = "update Progress", fontSize = 16.sp)
+                    }
+
+                    if (showDialog) {
+                       UpdateStatusPopup(
+                            onDismiss = { showDialog = false },
+                            itemId = selectedNotes
+                        )
+
+
                     }
 
                     // Edit Button
