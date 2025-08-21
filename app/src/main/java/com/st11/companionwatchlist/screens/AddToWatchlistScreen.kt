@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.st11.companionwatchlist.R
+import com.st11.companionwatchlist.utils.DatePickerField
 import com.st11.companionwatchlist.utils.DynamicStatusBar
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -49,6 +50,7 @@ fun AddToWatchlistScreen(navController: NavController) {
     var expanded by remember { mutableStateOf(false) }
     var expanded01 by remember { mutableStateOf(false) }
     var category by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf("") }
 
     val watchListType = listOf(
         "Tv Show", "Book"
@@ -360,6 +362,11 @@ fun AddToWatchlistScreen(navController: NavController) {
                         }
                     }
                 }
+                DatePickerField(
+                    label = "Expected completion date",
+                    value = selectedDate, // <-- This is from your parent state
+                    onDateSelected = { date -> selectedDate = date }
+                )
 
             }
 

@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import com.st11.companionwatchlist.navigation.Screen
 import com.st11.companionwatchlist.screens.components.CircularPercentageBar
+import com.st11.companionwatchlist.screens.components.EditDetailsPopUp
 import com.st11.companionwatchlist.screens.components.UpdateStatusPopup
 import com.st11.companionwatchlist.utils.DynamicStatusBar
 import compose.icons.FontAwesomeIcons
@@ -89,6 +90,8 @@ fun HomeScreen(navController: NavController) {
     val selectedWishes = remember { mutableStateOf<Set<String>>(emptySet()) }
     var showDialog by remember { mutableStateOf(false) }
 
+    var showEditDialog by remember { mutableStateOf(false) }
+
     val books = listOf(
         Book("The Name of the Wind", 662, "Fiction", "Fantasy"),
         Book("Dune", 688, "Fiction", "Sci-Fi"),
@@ -98,57 +101,62 @@ fun HomeScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-        TopAppBar(
-            title = {
-                if (isSearching) {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
-                        placeholder = { Text("Search...", color = Color.White.copy(alpha = 0.7f)) },
-                        singleLine = true,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            cursorColor = Color.White,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            TopAppBar(
+                title = {
+                    if (isSearching) {
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = {
+                                Text(
+                                    "Search...",
+                                    color = Color.White.copy(alpha = 0.7f)
+                                )
+                            },
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White,
+                                cursorColor = Color.White,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
 
-                } else {
-                    Text("My Expenses", color = Color.White)
-                }
-            },
-            actions = {
-                IconButton(onClick = { isSearching = !isSearching }) {
-                    Icon(
-                        imageVector = if (isSearching) Icons.Default.Close else Icons.Default.Search,
-                        contentDescription = "Search",
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-                if (!isSearching) {
+                    } else {
+                        Text("Home", color = Color.White)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { isSearching = !isSearching }) {
+                        Icon(
+                            imageVector = if (isSearching) Icons.Default.Close else Icons.Default.Search,
+                            contentDescription = "Search",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    if (!isSearching) {
 //                    Icon(
 //                        imageVector = if (isSearching) Icons.Default.Close else Icons.Default.Search,
 //                        contentDescription = "Search",
 //                        tint = Color.White
 //                    )
-                    IconButton(onClick = {
+                        IconButton(onClick = {
 //                        isSearching = !isSearching
-                    }) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Solid.Cog,
-                            contentDescription = "heart",
-                            tint = Color.White,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        }) {
+                            Icon(
+                                imageVector = FontAwesomeIcons.Solid.Cog,
+                                contentDescription = "heart",
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
-                }
 
 //                IconButton(onClick = { isSearching = !isSearching }) {
 //                    Icon(
@@ -158,14 +166,14 @@ fun HomeScreen(navController: NavController) {
 //                    )
 //                }
 
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = backgroundColor, // dark green
-                titleContentColor = Color.White,
-                navigationIconContentColor = Color.White
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = backgroundColor, // dark green
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
-        )
-                 },
+        },
 
 //        bottomBar = {
 //            // Bottom bar container
@@ -250,8 +258,7 @@ fun HomeScreen(navController: NavController) {
                 }
 
 
-
-            }else{
+            } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -286,9 +293,6 @@ fun HomeScreen(navController: NavController) {
             }
 
 
-
-
-
         }
 
     ) { paddingValues ->
@@ -307,7 +311,6 @@ fun HomeScreen(navController: NavController) {
         ) {
 
 
-
             Spacer(modifier = Modifier.height(8.dp)) // space between icon and content
 
 
@@ -317,7 +320,7 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier
                     .padding(end = 16.dp, start = 16.dp),
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = colorResource(id=R.color.dark)
+                color = colorResource(id = R.color.dark)
             )
 //                    Spacer(modifier = Modifier.height(8.dp))
             // Subtitle
@@ -347,33 +350,34 @@ fun HomeScreen(navController: NavController) {
                 ) {
 
 //                    itemsIndexed(books) { index, book ->
-                   for ((index, book) in books.withIndex()) {
+                    for ((index, book) in books.withIndex()) {
 
-                       val hapticFeedback = LocalHapticFeedback.current
-                       val isSelected = selectedWishes.value.contains(book.title)
+                        val hapticFeedback = LocalHapticFeedback.current
+                        val isSelected = selectedWishes.value.contains(book.title)
 
-                       val onClick = {
-                           if (selectedWishes.value.isNotEmpty()) {
-                               selectedWishes.value = selectedWishes.value.toMutableSet().apply {
-                                   if (contains(book.title)) remove(book.title) else add(book.title)
-                               }
-                           }
-                       }
+                        val onClick = {
+                            if (selectedWishes.value.isNotEmpty()) {
+                                selectedWishes.value = selectedWishes.value.toMutableSet().apply {
+                                    if (contains(book.title)) remove(book.title) else add(book.title)
+                                }
+                            }
+                        }
 
-                       val onLongPress = {
-                           selectedWishes.value = selectedWishes.value.toMutableSet().apply {
-                               if (contains(book.title)) remove(book.title) else add(book.title)
-                           }
-                           hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                       }
+                        val onLongPress = {
+                            selectedWishes.value = selectedWishes.value.toMutableSet().apply {
+                                if (contains(book.title)) remove(book.title) else add(book.title)
+                            }
+                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                        }
 
                         // Book row
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .combinedClickable(
-                                onClick = onClick,
-                                onLongClick = onLongPress
-                            )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = onClick,
+                                    onLongClick = onLongPress
+                                )
 //                            .combinedClickable(
 //                                onClick = { /* Normal click */ },
 //                                onLongClick = { selectedBook = book }
@@ -423,32 +427,32 @@ fun HomeScreen(navController: NavController) {
                                 Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Start
                             ) {
-                            CircularPercentageBar(
-                                percentage = viewPercentage.coerceIn(0f, 1f),
+                                CircularPercentageBar(
+                                    percentage = viewPercentage.coerceIn(0f, 1f),
 //            modifier = Modifier
 //                .size(48.dp) // adjust size as needed
 //                .align(Alignment.TopStart)
-                            )
-                            IconButton(
-                                onClick = {
-                                    selectedNotes = book.title
-                                    showSheet = true
-                                },
-                                modifier = Modifier
-                                    .size(56.dp) // total button size
-                                    .clip(RoundedCornerShape(16.dp)) // round corners
-                            ) {
-                                // White Icon on top
-                                Icon(
-                                    imageVector = FontAwesomeIcons.Solid.InfoCircle,
-                                    contentDescription = "Info",
-                                    tint = colorResource(id = R.color.polynesian_blue),
-                                    modifier = Modifier
-                                        .size(28.dp)
                                 )
+                                IconButton(
+                                    onClick = {
+                                        selectedNotes = book.title
+                                        showSheet = true
+                                    },
+                                    modifier = Modifier
+                                        .size(56.dp) // total button size
+                                        .clip(RoundedCornerShape(16.dp)) // round corners
+                                ) {
+                                    // White Icon on top
+                                    Icon(
+                                        imageVector = FontAwesomeIcons.Solid.InfoCircle,
+                                        contentDescription = "Info",
+                                        tint = colorResource(id = R.color.polynesian_blue),
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                    )
 
+                                }
                             }
-                        }
                         }
 
                         // Divider except after last item
@@ -492,12 +496,8 @@ fun HomeScreen(navController: NavController) {
 //                    }
 
 
-
                 }
             }
-
-
-
 
 
         }
@@ -536,7 +536,7 @@ fun HomeScreen(navController: NavController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector =  FontAwesomeIcons.Solid.CircleNotch,
+                            imageVector = FontAwesomeIcons.Solid.CircleNotch,
                             contentDescription = "update",
                             modifier = Modifier.size(20.dp)
                         )
@@ -545,7 +545,7 @@ fun HomeScreen(navController: NavController) {
                     }
 
                     if (showDialog) {
-                       UpdateStatusPopup(
+                        UpdateStatusPopup(
                             onDismiss = { showDialog = false },
                             itemId = selectedNotes
                         )
@@ -558,7 +558,7 @@ fun HomeScreen(navController: NavController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
+                                showEditDialog = true
                             }
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -572,134 +572,141 @@ fun HomeScreen(navController: NavController) {
                         Text(text = "Edit", fontSize = 16.sp)
                     }
 
-                    // Delete Button
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-
-                            }
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Regular.TrashAlt,
-                            contentDescription = "Delete",
-                            modifier = Modifier.size(20.dp)
+                    if (showEditDialog) {
+                        EditDetailsPopUp(
+                            onDismiss = {  showEditDialog = false },
+                            itemId = selectedNotes
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(text = "Delete", fontSize = 16.sp)
                     }
 
+                        // Delete Button
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
+                                }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = FontAwesomeIcons.Regular.TrashAlt,
+                                contentDescription = "Delete",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(text = "Delete", fontSize = 16.sp)
+                        }
 
-                            }
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector =  FontAwesomeIcons.Solid.ShareAlt,
-                            contentDescription = "share",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(text = "Share Watchlist", fontSize = 16.sp)
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+
+                                }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = FontAwesomeIcons.Solid.ShareAlt,
+                                contentDescription = "share",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(text = "Share Watchlist", fontSize = 16.sp)
+                        }
+
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+
+                                }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = FontAwesomeIcons.Regular.ThumbsUp,
+                                contentDescription = "Mark as complete",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(text = "Mark as complete", fontSize = 16.sp)
+                        }
                     }
-
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-
-                            }
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = FontAwesomeIcons.Regular.ThumbsUp,
-                            contentDescription = "Mark as complete",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(text = "Mark as complete", fontSize = 16.sp)
-                    }
-                }
 //                Button(
 //                    onClick = { showSheet = false },
 //                    modifier = Modifier.align(Alignment.End)
 //                ) {
 //                    Text("Close")
 //                }
+                }
             }
         }
     }
-}
-
-
-// ✅ Local book model + list
-data class Book(
-    val title: String,
-    val pages: Int,
-    val type: String,
-    val genre: String
-)
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
-}
+    // ✅ Local book model + list
+    data class Book(
+        val title: String,
+        val pages: Int,
+        val type: String,
+        val genre: String
+    )
 
 
+    @Preview(showBackground = true)
+    @Composable
+    fun HomeScreenPreview() {
+        HomeScreen(navController = rememberNavController())
+    }
 
-@Composable
-fun ActionItem(
-    icon: ImageVector,
-    text: String,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .padding(4.dp)
-            .clickable { onClick() }
-            .size(width = 100.dp, height = 70.dp), // uniform size for consistency
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFF5F5F5) // soft grey background
-        )
+
+    @Composable
+    fun ActionItem(
+        icon: ImageVector,
+        text: String,
+        onClick: () -> Unit
     ) {
-        Column(
+        Card(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = text,
-                tint = Color(0xFF1976D2), // blue accent
-                modifier = Modifier.size(24.dp)
+                .padding(4.dp)
+                .clickable { onClick() }
+                .size(width = 100.dp, height = 70.dp), // uniform size for consistency
+            shape = RoundedCornerShape(8.dp),
+            elevation = CardDefaults.cardElevation(6.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFF5F5F5) // soft grey background
             )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = text,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = text,
+                    tint = Color(0xFF1976D2), // blue accent
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = text,
 //                style = MaterialTheme.typography.bodyMedium.copy(
 //                    fontWeight = FontWeight.SemiBold
 //                ),
-                color = Color.Black
-            )
+                    color = Color.Black
+                )
+            }
         }
     }
-}
+
 
 //@Composable
 //fun ActionItem(icon: ImageVector, text: String, onClick: () -> Unit) {
