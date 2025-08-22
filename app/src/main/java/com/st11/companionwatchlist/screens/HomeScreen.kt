@@ -173,10 +173,11 @@ fun HomeScreen(navController: NavController) {
 //                    )
                         IconButton(onClick = {
 //                        isSearching = !isSearching
+                            navController.navigate(Screen.Settings.route)
                         }) {
                             Icon(
                                 imageVector = FontAwesomeIcons.Solid.Cog,
-                                contentDescription = "heart",
+                                contentDescription = "settings",
                                 tint = Color.White,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -278,7 +279,9 @@ fun HomeScreen(navController: NavController) {
                     ) {
 //                        ActionItem(Icons.Default.Edit, "Mark as Complete") { /* edit logic */ }
 //                        ActionItem(Icons.Default.Edit, "View") { /* view logic */ }
-                        ActionItem(Icons.Default.Delete, "Delete") { /* delete logic */ }
+                        ActionItem(Icons.Default.Delete, "Delete") { /* delete logic */
+                        showMultiDeleteDialog = true
+                        }
                     }
                 }
 

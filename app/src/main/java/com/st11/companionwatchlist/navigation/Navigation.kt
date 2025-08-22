@@ -14,15 +14,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.st11.companionwatchlist.screens.HomeScreen
 import com.st11.companionwatchlist.screens.AddToWatchlistScreen
+import com.st11.companionwatchlist.screens.CreditAuthorScreen
+import com.st11.companionwatchlist.screens.SettingScreen
 import org.koin.androidx.compose.getViewModel
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Settings : Screen("settings")
 
-    object EditCalendar : Screen("editCalendar/{itemId}") {
-        fun createRoute(itemId: String) = "eventDetail/$itemId"
-    }
+//    object EditCalendar : Screen("editCalendar/{itemId}") {
+//        fun createRoute(itemId: String) = "eventDetail/$itemId"
+//    }
 
     object AddToWatchlist : Screen("addToWatchlist")
 
@@ -44,9 +46,9 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier) {
         popExitTransition = { slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut() }
     ) {
         composable(Screen.Home.route) { HomeScreen(navController) }
-//        composable(Screen.Settings.route) { SettingScreen(navController) }
+        composable(Screen.Settings.route) { SettingScreen(navController) }
         composable(Screen.AddToWatchlist.route) { AddToWatchlistScreen(navController) }
-//        composable(Screen.CreditAuthor.route) {  CreditAuthorScreen(navController)   }
+        composable(Screen.CreditAuthor.route) {  CreditAuthorScreen(navController)   }
 
 //        composable(Screen.EditCalendar.route) { backStackEntry ->
 //            val itemId = backStackEntry.arguments?.getString("itemId") ?: "Unknown"
