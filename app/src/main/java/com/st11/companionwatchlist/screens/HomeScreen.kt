@@ -3,6 +3,7 @@ package com.st11.companionwatchlist.screens
 
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -49,6 +50,8 @@ import com.st11.companionwatchlist.screens.components.CircularPercentageBar
 import com.st11.companionwatchlist.screens.components.EditDetailsPopUp
 import com.st11.companionwatchlist.screens.components.UpdateStatusPopup
 import com.st11.companionwatchlist.utils.DynamicStatusBar
+import com.st11.companionwatchlist.utils.formatDateToReadable
+import com.st11.companionwatchlist.viewmodel.WatchListViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
@@ -82,6 +85,7 @@ fun HomeScreen(navController: NavController) {
     var showSheet by remember { mutableStateOf(false) }
     var selectedNotes by remember { mutableStateOf("") }
     var selectedItemId by remember { mutableStateOf<String?>(null) }
+
 // Calculate progress
     val viewPercentage by remember { mutableStateOf(0.7f) }
     // ✅ Track selected book for long-press actions
@@ -91,6 +95,9 @@ fun HomeScreen(navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
 
     var showEditDialog by remember { mutableStateOf(false) }
+    val watchListViewModel: WatchListViewModel = koinViewModel()
+    val context = LocalContext.current
+    val watchList = watchListViewModel.watchlist.collectAsState(initial = emptyList()).value
 
     val books = listOf(
         Book("The Name of the Wind", 662, "Fiction", "Fantasy"),
@@ -98,6 +105,13 @@ fun HomeScreen(navController: NavController) {
         Book("Atomic Habits", 320, "Non-Fiction", "Self-Help"),
         Book("The Pragmatic Programmer", 352, "Non-Fiction", "Tech")
     )
+
+
+    // ✅ **Filter the list based on search query**
+    val filteredWatchList = watchList.filter {
+        it.watchListTitle.contains(searchQuery, ignoreCase = true) ||
+                it.category.contains(searchQuery, ignoreCase = true)
+    }
 
     Scaffold(
         topBar = {
@@ -349,123 +363,203 @@ fun HomeScreen(navController: NavController) {
                         .padding(12.dp)
                 ) {
 
-//                    itemsIndexed(books) { index, book ->
-                    for ((index, book) in books.withIndex()) {
 
-                        val hapticFeedback = LocalHapticFeedback.current
-                        val isSelected = selectedWishes.value.contains(book.title)
 
-                        val onClick = {
-                            if (selectedWishes.value.isNotEmpty()) {
-                                selectedWishes.value = selectedWishes.value.toMutableSet().apply {
-                                    if (contains(book.title)) remove(book.title) else add(book.title)
+
+
+                    // ✅ Show "No Data Available" if the list is empty initially or after filtering
+                    if (watchList.isEmpty()) {
+                        // No data available at the initial display  // loupe
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.watchingamovie), // Replace with your image in res/drawable
+                                    contentDescription = "No Data",
+                                    modifier = Modifier.size(120.dp)
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text(
+                                    text = "No data available!",
+                                    color = Color.Gray,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+
+
+
+
+
+
+
+                    }                 // No data available after search
+
+                    else if (filteredWatchList.isEmpty()){
+                        // No data available after search
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.loupe), // Replace with your image in res/drawable
+                                    contentDescription = "No Data",
+                                    modifier = Modifier.size(120.dp)
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text(
+                                    text = "No data available!",
+                                    color = Color.Gray,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                    }else {
+                        for (index in filteredWatchList.indices) {
+                            val item = filteredWatchList[index]
+
+                            val hapticFeedback = LocalHapticFeedback.current
+                            val isSelected = selectedWishes.value.contains(item.watchlistId)
+
+                            val onClick = {
+                                if (selectedWishes.value.isNotEmpty()) {
+                                    selectedWishes.value = selectedWishes.value.toMutableSet().apply {
+                                        if (contains(item.watchlistId)) remove(item.watchlistId) else add(item.watchlistId)
+                                    }
                                 }
                             }
-                        }
 
-                        val onLongPress = {
-                            selectedWishes.value = selectedWishes.value.toMutableSet().apply {
-                                if (contains(book.title)) remove(book.title) else add(book.title)
+                            val onLongPress = {
+                                selectedWishes.value = selectedWishes.value.toMutableSet().apply {
+                                    if (contains(item.watchlistId)) remove(item.watchlistId) else add(item.watchlistId)
+                                }
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                        }
 
-                        // Book row
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .combinedClickable(
-                                    onClick = onClick,
-                                    onLongClick = onLongPress
-                                )
+                            // Book row
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .combinedClickable(
+                                        onClick = onClick,
+                                        onLongClick = onLongPress
+                                    )
 //                            .combinedClickable(
 //                                onClick = { /* Normal click */ },
 //                                onLongClick = { selectedBook = book }
 //                                // ✅ show actions
 //                            )
-                        ) {
-                            if (isSelected) {
-                                Checkbox(
-                                    checked = true,
-                                    onCheckedChange = { onLongPress() },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = colorResource(id = R.color.teal_700),
-                                        uncheckedColor = colorResource(id = R.color.darkLight),
-                                        checkmarkColor = colorResource(id = R.color.white)
+                            ) {
+                                if (isSelected) {
+                                    Checkbox(
+                                        checked = true,
+                                        onCheckedChange = { onLongPress() },
+                                        colors = CheckboxDefaults.colors(
+                                            checkedColor = colorResource(id = R.color.teal_700),
+                                            uncheckedColor = colorResource(id = R.color.darkLight),
+                                            checkmarkColor = colorResource(id = R.color.white)
+                                        )
+                                    )
+                                }
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    text = item.watchListTitle,
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.SemiBold
                                     )
                                 )
-                            }
-                            Spacer(Modifier.height(4.dp))
-                            Text(
-                                text = book.title,
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            )
-                            Spacer(Modifier.height(4.dp))
-                            Row(
-                                Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
+                                Spacer(Modifier.height(2.dp))
                                 Text(
-                                    "Pages: ${book.pages}",
-                                    style = MaterialTheme.typography.bodyMedium
+                                    text = "expected Completion Date: ${formatDateToReadable(item.expectedCompleteDate)}",
+                                    color = colorResource(id = R.color.text_gray),
                                 )
-                                Text(
-                                    "Type: ${book.type}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Text(
-                                    "Genre: ${book.genre}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                            Spacer(Modifier.height(4.dp))
-
-
-                            Row(
-                                Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                CircularPercentageBar(
-                                    percentage = viewPercentage.coerceIn(0f, 1f),
-//            modifier = Modifier
-//                .size(48.dp) // adjust size as needed
-//                .align(Alignment.TopStart)
-                                )
-                                IconButton(
-                                    onClick = {
-                                        selectedNotes = book.title
-                                        showSheet = true
-                                    },
-                                    modifier = Modifier
-                                        .size(56.dp) // total button size
-                                        .clip(RoundedCornerShape(16.dp)) // round corners
+                                Spacer(Modifier.height(4.dp))
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    // White Icon on top
-                                    Icon(
-                                        imageVector = FontAwesomeIcons.Solid.InfoCircle,
-                                        contentDescription = "Info",
-                                        tint = colorResource(id = R.color.polynesian_blue),
-                                        modifier = Modifier
-                                            .size(28.dp)
+                                    Text(
+                                        "Pages: ${item.noEpisodesPage}",
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
+                                    Text(
+                                        "Type: ${item.type}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
+                                        "Genre: ${item.category}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                                Spacer(Modifier.height(4.dp))
 
+
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    CircularPercentageBar(
+                                        percentage = viewPercentage.coerceIn(0f, 1f),
+                                    )
+                                    IconButton(
+                                        onClick = {
+                                            selectedNotes = item.watchListTitle
+                                            showSheet = true
+                                        },
+                                        modifier = Modifier
+                                            .size(56.dp) // total button size
+                                            .clip(RoundedCornerShape(16.dp)) // round corners
+                                    ) {
+                                        // White Icon on top
+                                        Icon(
+                                            imageVector = FontAwesomeIcons.Solid.InfoCircle,
+                                            contentDescription = "Info",
+                                            tint = colorResource(id = R.color.polynesian_blue),
+                                            modifier = Modifier
+                                                .size(28.dp)
+                                        )
+
+                                    }
                                 }
                             }
+
+                            // Divider except after last item
+                            if (index < books.lastIndex) {
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                    thickness = 1.dp,
+                                    color = Color(0xFFE0E0E0)
+                                )
+                            }
+
+
+
+
                         }
 
-                        // Divider except after last item
-                        if (index < books.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                thickness = 1.dp,
-                                color = Color(0xFFE0E0E0)
-                            )
-                        }
+
+
+
+
                     }
+
+////                    itemsIndexed(books) { index, book ->
+//                    for ((index, book) in books.withIndex()) {
+//
+//
+//                    }
 
 
 //                    // ✅ Action menu appears if long pressed

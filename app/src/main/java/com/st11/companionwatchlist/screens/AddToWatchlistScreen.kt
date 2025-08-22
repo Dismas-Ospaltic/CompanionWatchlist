@@ -27,12 +27,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.st11.companionwatchlist.R
+import com.st11.companionwatchlist.model.WatchListEntity
 import com.st11.companionwatchlist.utils.DatePickerField
 import com.st11.companionwatchlist.utils.DynamicStatusBar
+import com.st11.companionwatchlist.viewmodel.WatchListViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.Plus
+import org.koin.androidx.compose.koinViewModel
+import kotlin.random.Random
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +46,9 @@ fun AddToWatchlistScreen(navController: NavController) {
     DynamicStatusBar(colorResource(id = R.color.white))
 
     val context = LocalContext.current
+  val watchListViewModel: WatchListViewModel = koinViewModel()
+
+
 
     var title by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
@@ -51,6 +58,7 @@ fun AddToWatchlistScreen(navController: NavController) {
     var expanded01 by remember { mutableStateOf(false) }
     var category by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
+    var link by remember { mutableStateOf("") }
 
     val watchListType = listOf(
         "Tv Show", "Book"
@@ -120,7 +128,22 @@ fun AddToWatchlistScreen(navController: NavController) {
             ) {
                 Button(
                     onClick = {
-                    if(title.isNotEmpty() && notes.isNotEmpty() && watchlistPageNo.isNotEmpty() && type.isNotEmpty() && category.isNotEmpty()){
+                    if(title.isNotEmpty()  && watchlistPageNo.isNotEmpty() && type.isNotEmpty() && category.isNotEmpty()){
+                       watchListViewModel.insertWatchlist(
+                           WatchListEntity(
+                               watchListTitle = title,
+                               expectedCompleteDate = selectedDate,
+                               link = link,
+                               type = type,
+                               notes = notes,
+                               category = category,
+                               noEpisodesPage = watchlistPageNo.toInt(),
+                               watchlistId = generateSixDigitRandomNumber().toString()
+                               )
+                       )
+
+
+
 
                         Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
                     }else{
@@ -212,6 +235,24 @@ fun AddToWatchlistScreen(navController: NavController) {
                     value = title ,
                     onValueChange = { title  = it },
                     label = { Text("Title *") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
+                        focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                        focusedBorderColor = backgroundColor,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedLabelColor = backgroundColor,
+                        cursorColor = backgroundColor
+                    ),
+                    singleLine = true,
+                )
+
+
+
+                OutlinedTextField(
+                    value = link ,
+                    onValueChange = { link  = it },
+                    label = { Text("link") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
@@ -479,4 +520,10 @@ fun DropdownSelector(
 //        }
 //    }
 //}
+
+
+
+fun generateSixDigitRandomNumber(): Int {
+    return Random.nextInt(1000000, 1000000000)  // Generates a random number between 100000 (inclusive) and 1000000 (exclusive)
+}
 
