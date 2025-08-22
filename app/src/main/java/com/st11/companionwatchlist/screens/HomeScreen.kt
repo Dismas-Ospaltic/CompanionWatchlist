@@ -2,6 +2,7 @@ package com.st11.companionwatchlist.screens
 
 
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,16 +10,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
@@ -30,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import com.st11.companionwatchlist.R
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -42,9 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import com.st11.companionwatchlist.navigation.Screen
 import com.st11.companionwatchlist.screens.components.CircularPercentageBar
 import com.st11.companionwatchlist.screens.components.EditDetailsPopUp
@@ -57,19 +50,12 @@ import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.regular.ThumbsUp
 import compose.icons.fontawesomeicons.regular.TrashAlt
-import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.CircleNotch
 import compose.icons.fontawesomeicons.solid.Cog
-import compose.icons.fontawesomeicons.solid.Eye
-import compose.icons.fontawesomeicons.solid.EyeSlash
 import compose.icons.fontawesomeicons.solid.InfoCircle
 import compose.icons.fontawesomeicons.solid.Pen
 import compose.icons.fontawesomeicons.solid.Plus
 import compose.icons.fontawesomeicons.solid.ShareAlt
-import compose.icons.fontawesomeicons.solid.Store
-import compose.icons.fontawesomeicons.solid.Trash
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -84,14 +70,39 @@ fun HomeScreen(navController: NavController) {
     val sheetState = rememberModalBottomSheetState()
     var showSheet by remember { mutableStateOf(false) }
     var selectedNotes by remember { mutableStateOf("") }
-    var selectedItemId by remember { mutableStateOf<String?>(null) }
+//    var selectedItemId by remember { mutableStateOf<String?>(null) }
+//    var selectedItemTitle by remember { mutableStateOf<String?>(null) }
+//    var selectedItemStatus by remember { mutableStateOf<String?>(null) }
+//    var selectedItemSeenPageEpisode by remember { mutableStateOf<Int?>(null) }
+//    var selectedItemLink by remember { mutableStateOf<String?>(null) }
+//    var selectedItemCategory by remember { mutableStateOf<String?>(null) }
+//    var selectedItemExpectedCompleteDate by remember { mutableStateOf<String?>(null) }
+//    var selectedItemType by remember { mutableStateOf<String?>(null) }
+    var selectedItemNotes by remember { mutableStateOf<String?>(null) }
+    var selectedItemNoEpisodesPage by remember { mutableStateOf<Int?>(null) }
+    var selectedItemWatchlistId by remember { mutableStateOf<String?>(null) }
+    var selectedItemWatchlistStatus by remember { mutableStateOf<String?>(null) }
+    var selectedItemWatchlistTitle by remember { mutableStateOf<String?>(null) }
+    var selectedItemWatchlistType by remember { mutableStateOf<String?>(null) }
+    var selectedItemWatchlistCategory by remember { mutableStateOf<String?>(null) }
+    var selectedItemWatchlistNotes by remember { mutableStateOf<String?>(null) }
+    var selectedItemWatchlistLink by remember { mutableStateOf<String?>(null) }
+    var selectedItemWatchlistCurrentEpisodesPage by remember { mutableStateOf<Int?>(null) }
+    var selectedItemWatchlistExpectedCompleteDate by remember { mutableStateOf<String?>(null) }
+
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showUpdateStatusDialog by remember { mutableStateOf(false) }
+    var showMultiDeleteDialog by remember { mutableStateOf(false) }
+
+
 
 // Calculate progress
-    val viewPercentage by remember { mutableStateOf(0.7f) }
+//    val viewPercentage by remember { mutableStateOf(0.7f) }
     // ✅ Track selected book for long-press actions
 //    var selectedBook by remember { mutableStateOf<Book?>(null) }
 
-    val selectedWishes = remember { mutableStateOf<Set<String>>(emptySet()) }
+    val selectedWatchlistIds = remember { mutableStateOf<Set<String>>(emptySet()) }
     var showDialog by remember { mutableStateOf(false) }
 
     var showEditDialog by remember { mutableStateOf(false) }
@@ -229,7 +240,7 @@ fun HomeScreen(navController: NavController) {
             // ✅ Hide Add button if actions are visible
 //            if (selectedBook == null) {
 
-            if (selectedWishes.value.isNotEmpty()) {
+            if (selectedWatchlistIds.value.isNotEmpty()) {
                 // ✅ Action menu appears if long pressed
 //                Box(
 //                    modifier = Modifier
@@ -265,7 +276,7 @@ fun HomeScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ActionItem(Icons.Default.Edit, "Mark as Complete") { /* edit logic */ }
+//                        ActionItem(Icons.Default.Edit, "Mark as Complete") { /* edit logic */ }
 //                        ActionItem(Icons.Default.Edit, "View") { /* view logic */ }
                         ActionItem(Icons.Default.Delete, "Delete") { /* delete logic */ }
                     }
@@ -428,19 +439,30 @@ fun HomeScreen(navController: NavController) {
                         for (index in filteredWatchList.indices) {
                             val item = filteredWatchList[index]
 
+                            selectedItemWatchlistId = item.watchlistId
+                            selectedItemNoEpisodesPage = item.noEpisodesPage
+                            selectedItemWatchlistTitle = item.watchListTitle
+                            selectedItemWatchlistType = item.type
+                            selectedItemWatchlistCategory = item.category
+                            selectedItemWatchlistNotes = item.notes
+                            selectedItemWatchlistLink = item.link
+                            selectedItemWatchlistCurrentEpisodesPage = item.seenPageEpisode
+                            selectedItemWatchlistExpectedCompleteDate = item.expectedCompleteDate
+
+
                             val hapticFeedback = LocalHapticFeedback.current
-                            val isSelected = selectedWishes.value.contains(item.watchlistId)
+                            val isSelected = selectedWatchlistIds.value.contains(item.watchlistId)
 
                             val onClick = {
-                                if (selectedWishes.value.isNotEmpty()) {
-                                    selectedWishes.value = selectedWishes.value.toMutableSet().apply {
+                                if (selectedWatchlistIds.value.isNotEmpty()) {
+                                    selectedWatchlistIds.value = selectedWatchlistIds.value.toMutableSet().apply {
                                         if (contains(item.watchlistId)) remove(item.watchlistId) else add(item.watchlistId)
                                     }
                                 }
                             }
 
                             val onLongPress = {
-                                selectedWishes.value = selectedWishes.value.toMutableSet().apply {
+                                selectedWatchlistIds.value = selectedWatchlistIds.value.toMutableSet().apply {
                                     if (contains(item.watchlistId)) remove(item.watchlistId) else add(item.watchlistId)
                                 }
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -489,7 +511,9 @@ fun HomeScreen(navController: NavController) {
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
-                                        "Pages: ${item.noEpisodesPage}",
+
+
+                                        if (item.type == "Tv Show") "Episodes: ${item.noEpisodesPage}" else "Pages:  ${item.noEpisodesPage}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                     Text(
@@ -508,6 +532,12 @@ fun HomeScreen(navController: NavController) {
                                     Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Start
                                 ) {
+
+                                    // Calculate progress
+                                    val viewPercentage = if (item.seenPageEpisode > 0) {
+                                        (item.seenPageEpisode.toFloat()) / item.noEpisodesPage.toFloat()
+                                    } else 0f
+
                                     CircularPercentageBar(
                                         percentage = viewPercentage.coerceIn(0f, 1f),
                                     )
@@ -641,7 +671,8 @@ fun HomeScreen(navController: NavController) {
                     if (showDialog) {
                         UpdateStatusPopup(
                             onDismiss = { showDialog = false },
-                            itemId = selectedNotes
+                            itemId = selectedItemWatchlistId!!,
+                            currentPageEpisode = selectedItemWatchlistCurrentEpisodesPage!!.toInt()
                         )
 
 
@@ -669,8 +700,18 @@ fun HomeScreen(navController: NavController) {
                     if (showEditDialog) {
                         EditDetailsPopUp(
                             onDismiss = {  showEditDialog = false },
-                            itemId = selectedNotes
+//                            itemId = selectedNotes
+                            watchListId = selectedItemWatchlistId!!,
+                            watchListTitle = selectedItemWatchlistTitle!!,
+                            expectedCompleteDate = selectedItemWatchlistExpectedCompleteDate!!,
+                            link = selectedItemWatchlistLink!!,
+                            notes = selectedItemWatchlistNotes!!,
+                            noEpisodesPage = selectedItemNoEpisodesPage!!,
+                            type = selectedItemWatchlistType!!,
+                            category = selectedItemWatchlistCategory!!
+
                         )
+
                     }
 
                         // Delete Button
@@ -678,7 +719,7 @@ fun HomeScreen(navController: NavController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-
+                                    showDeleteDialog = true
                                 }
                                 .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -697,6 +738,36 @@ fun HomeScreen(navController: NavController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
+                                    val shareText = """
+                                   Hey, checkout this ${when (selectedItemWatchlistType) {
+                                        "Tv Show" -> "TV show"
+                                        "Book" -> "book"
+                                        else -> "item"
+                                    }}
+                                    title - $selectedItemWatchlistTitle it has $selectedItemNoEpisodesPage
+                                    ${when (selectedItemWatchlistType) {
+                                        "Tv Show" -> "episode"
+                                        "Book" -> "pages"
+                                        else -> "items"
+                                    }}
+                                    
+                              """.trimIndent()
+
+                                    val intent =
+                                        Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(
+                                                Intent.EXTRA_TEXT,
+                                                shareText
+                                            )
+                                        }
+                                    context.startActivity(
+                                        Intent.createChooser(
+                                            intent,
+                                            "Share Watchlist Details"
+                                        )
+                                    )
+
 
                                 }
                                 .padding(12.dp),
@@ -717,6 +788,7 @@ fun HomeScreen(navController: NavController) {
                                 .fillMaxWidth()
                                 .clickable {
 
+                               showUpdateStatusDialog = true
                                 }
                                 .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -739,6 +811,144 @@ fun HomeScreen(navController: NavController) {
                 }
             }
         }
+
+    // AlertDialog logic
+    if (showMultiDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showMultiDeleteDialog = false },
+            title = { Text("Delete Watchlist") },
+            text = { Text("Delete from watchlist?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    watchListViewModel.deleteWatchListById(itemId = selectedItemWatchlistId!!)
+
+                    for (watchlistId in selectedWatchlistIds.value) {
+                        val list = watchList.find { it.watchlistId == watchlistId }
+                         if (list != null){
+                             watchListViewModel.deleteWatchListById(watchlistId)
+                         }
+
+//                        val wishStatus = wish?.wishStatus
+//                        if (wishStatus != "Purchased") {
+//                            if (wish != null) {
+//                                wishlistViewModel.updateWishStatus(
+//                                    wishId,
+//                                    "Purchased",
+//                                    formatDate(System.currentTimeMillis())
+//                                )
+//                            }}
+
+
+                    }
+                    Toast.makeText(
+                        context,
+                        "Item Delete",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    showMultiDeleteDialog = false
+                }) {
+                    Text(
+                        text = "Delete",
+                        color = colorResource(id = R.color.red)
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showMultiDeleteDialog = false }) {
+                    Text(
+                        text = "Cancel",
+                        color = colorResource(id = R.color.text_gray)
+                    )
+                }
+            }
+        )
+    }
+
+
+
+    // AlertDialog logic
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete Watchlist") },
+            text = { Text("Delete from watchlist?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    watchListViewModel.deleteWatchListById(itemId = selectedItemWatchlistId!!)
+
+//                    for (wishId in selectedWishes.value) {
+//                        val wish = wishlist.find { it.wishId == wishId }
+//                        val wishStatus = wish?.wishStatus
+//                        if (wishStatus != "Purchased") {
+//                            if (wish != null) {
+//                                wishlistViewModel.updateWishStatus(
+//                                    wishId,
+//                                    "Purchased",
+//                                    formatDate(System.currentTimeMillis())
+//                                )
+//                            }}
+//                    }
+                    Toast.makeText(
+                        context,
+                        "Item Delete",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    showDeleteDialog = false
+                }) {
+                    Text(
+                        text = "Delete",
+                        color = colorResource(id = R.color.red)
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(
+                        text = "Cancel",
+                        color = colorResource(id = R.color.text_gray)
+                    )
+                }
+            }
+        )
+    }
+
+
+
+
+    if (showUpdateStatusDialog) {
+        AlertDialog(
+            onDismissRequest = { showUpdateStatusDialog = false },
+            title = { Text("Mark Complete") },
+            text = { Text("Mark as complete in watchlist?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    watchListViewModel.updateSeenPageEpisodeById(selectedItemWatchlistId!!,selectedItemNoEpisodesPage!!)
+                    watchListViewModel.updateStatusById(selectedItemWatchlistId!!, "completed")
+
+                    Toast.makeText(
+                        context,
+                        "Item marked as complete, congratulations for the milestone!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    showUpdateStatusDialog = false
+                }) {
+                    Text(
+                        text = "Mark",
+                        color = colorResource(id = R.color.red)
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showUpdateStatusDialog = false }) {
+                    Text(
+                        text = "Cancel",
+                        color = colorResource(id = R.color.text_gray)
+                    )
+                }
+            }
+        )
+    }
+
     }
 
 

@@ -141,10 +141,7 @@ fun AddToWatchlistScreen(navController: NavController) {
                                watchlistId = generateSixDigitRandomNumber().toString()
                                )
                        )
-
-
-
-
+                    navController.popBackStack()
                         Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(context, "Please fill all the fields", Toast.LENGTH_SHORT).show()

@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -61,6 +62,7 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 import com.st11.companionwatchlist.R
 import com.st11.companionwatchlist.utils.DatePickerField
+import com.st11.companionwatchlist.viewmodel.WatchListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,21 +70,32 @@ fun EditDetailsPopUp(
 //    initialText: String,
     onDismiss: () -> Unit,
 //    onSave: (String) -> Unit,
-    itemId: String
+//    itemId: String
+    watchListId: String,
+    watchListTitle: String,
+    expectedCompleteDate: String,
+    link: String,
+    notes: String,
+    noEpisodesPage: Int,
+    type: String,
+    category: String
 ) {
 
     val backgroundColor = colorResource(id = R.color.polynesian_blue)
 
 
 
-    var title by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
-    var watchlistPageNo by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("") }
+    val watchListViewModel: WatchListViewModel = koinViewModel()
+    var title by remember { mutableStateOf(watchListTitle) }
+    var link by remember { mutableStateOf(link) }
+    var notes by remember { mutableStateOf(notes) }
+//    var watchlistPageNo by remember { mutableIntStateOf(noEpisodesPage) }
+    var watchlistPageNo by remember { mutableStateOf(noEpisodesPage.toString()) }
+    var type by remember { mutableStateOf(type) }
     var expanded by remember { mutableStateOf(false) }
     var expanded01 by remember { mutableStateOf(false) }
-    var category by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf(category) }
+    var selectedDate by remember { mutableStateOf(expectedCompleteDate) }
 
     val watchListType = listOf(
         "Tv Show", "Book"
@@ -183,6 +196,23 @@ fun EditDetailsPopUp(
                         singleLine = true,
                     )
 
+
+                OutlinedTextField(
+                    value = link ,
+                    onValueChange = { link  = it },
+                    label = { Text("link") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
+                        focusedContainerColor = Color.White.copy(alpha = 0.95f),
+                        focusedBorderColor = backgroundColor,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedLabelColor = backgroundColor,
+                        cursorColor = backgroundColor
+                    ),
+                    singleLine = true,
+                )
+
                     Text(
                         text = "Enter the Details or Notes of Book/Tv show use markup for styling",
                         modifier = Modifier
@@ -193,7 +223,7 @@ fun EditDetailsPopUp(
 
                     OutlinedTextField(
 //                        value = notes,
-                        value =itemId,
+                        value =notes,
                         onValueChange = { notes = it },
                         label = { Text("short Notes") },
                         modifier = Modifier
@@ -345,6 +375,21 @@ fun EditDetailsPopUp(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(onClick = {
+                        if(title.isNotEmpty()  && watchlistPageNo.isNotEmpty() && type.isNotEmpty() && category.isNotEmpty()){
+                            watchListViewModel.updateWatchlistById(
+                              itemId = watchListId,
+                                watchListTile = title,
+                                expectedCompleteDate = selectedDate,
+                                link = link,
+                                type = type,
+                                notes = notes,
+                                category = category,
+                                noEpisodesPage = watchlistPageNo.toInt()
+                            )
+                            onDismiss()
+                        }else{
+                            Toast.makeText(context, "Please fill all the fields", Toast.LENGTH_SHORT).show()
+                        }
 
                     },
                         colors = ButtonDefaults.buttonColors(

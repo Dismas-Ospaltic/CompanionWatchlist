@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 import com.st11.companionwatchlist.model.WatchListEntity
 
 
-@Database(entities = [WatchListEntity::class], version = 1, exportSchema = false)
+@Database(entities = [WatchListEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun watchListDao(): WatchListDao
