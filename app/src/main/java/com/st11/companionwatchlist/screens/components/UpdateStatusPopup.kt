@@ -119,7 +119,7 @@ fun UpdateStatusPopup(
                                itemId = itemId,
                                newSeenPageEpisode = episodePage.toInt()
                            )
-
+                            onDismiss()
                             Toast.makeText(context, "Progress updated!", Toast.LENGTH_SHORT).show()
                         }else{
                             Toast.makeText(context, "Please Enter the Episode or page you've Reached", Toast.LENGTH_SHORT).show()
