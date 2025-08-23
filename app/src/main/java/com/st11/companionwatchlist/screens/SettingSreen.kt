@@ -26,7 +26,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.st11.companionwatchlist.R
+import com.st11.companionwatchlist.navigation.Screen
+import com.st11.companionwatchlist.screens.components.SettingCard
 import com.st11.companionwatchlist.utils.DynamicStatusBar
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.InfoCircle
+import compose.icons.fontawesomeicons.solid.Lock
+import androidx.core.net.toUri
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,70 +72,32 @@ fun SettingScreen(navController: NavController) {
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .verticalScroll(rememberScrollState()) // ✅ Scrollable content
         ) {
-            // ✅ About Section
-            Text(
-                text = "About This App",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
+
+            SettingCard(
+                icon = FontAwesomeIcons.Solid.InfoCircle,
+                title = "About",
+                iconColor = colorResource(id = R.color.polynesian_blue), // Green
+                onClick = { /* Navigate */
+                    navController.navigate(Screen.CreditAuthor.route)
+                }
             )
 
-            Text(
-                text = "Always Update your watchlist and never forget a show or book you want to checkout",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 24.dp)
+
+            SettingCard(
+                icon = FontAwesomeIcons.Solid.Lock,
+                title = "Privacy policy",
+                iconColor = colorResource(id = R.color.marian_blue), // Green
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        "https://st11-homy.github.io/CompanionWatchlist/privacy-policy.html".toUri()
+                    )
+                    context.startActivity(intent)
+                    /* Navigate */
+                }
             )
 
-            HorizontalDivider(thickness = 1.dp, color = Color.LightGray.copy(alpha = 0.4f))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // ✅ Credits Section
-            Text(
-                text = "Credits & Acknowledgements",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            val iconCredits = listOf(
-//
-                "App icon was designed by Peerapak Takpho from Flaticon",
-
-                "App Screen image icons:",
-                "-No data Placeholder icon image designed by shmai from Flaticon",
-                "-No Search data placeholder icon image designed by kerismaker from Flaticon",
-
-                )
-
-            iconCredits.forEach { credit ->
-                Text(
-                    text = credit,
-                    style = if (credit.endsWith(":"))
-                        MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                    else
-                        MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // ✅ External link
-            Text(
-                text = "Visit Flaticon: www.flaticon.com",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = Color.Blue,
-                    fontWeight = FontWeight.SemiBold
-                ),
-                modifier = Modifier
-                    .clickable {
-                        val url = "https://www.flaticon.com"
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                        context.startActivity(intent)
-                    }
-                    .padding(vertical = 4.dp)
-            )
         }
     }
 }

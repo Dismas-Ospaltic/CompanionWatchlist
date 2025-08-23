@@ -442,15 +442,7 @@ fun HomeScreen(navController: NavController) {
                         for (index in filteredWatchList.indices) {
                             val item = filteredWatchList[index]
 
-                            selectedItemWatchlistId = item.watchlistId
-                            selectedItemNoEpisodesPage = item.noEpisodesPage
-                            selectedItemWatchlistTitle = item.watchListTitle
-                            selectedItemWatchlistType = item.type
-                            selectedItemWatchlistCategory = item.category
-                            selectedItemWatchlistNotes = item.notes
-                            selectedItemWatchlistLink = item.link
-                            selectedItemWatchlistCurrentEpisodesPage = item.seenPageEpisode
-                            selectedItemWatchlistExpectedCompleteDate = item.expectedCompleteDate
+
 
 
                             val hapticFeedback = LocalHapticFeedback.current
@@ -475,10 +467,13 @@ fun HomeScreen(navController: NavController) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .combinedClickable(
-                                        onClick = onClick,
-                                        onLongClick = onLongPress
-                                    )
+                                    .clickable{
+
+                                    }
+//                                    .combinedClickable(
+////                                        onClick = onClick,
+////                                        onLongClick = onLongPress
+//                                    )
 //                            .combinedClickable(
 //                                onClick = { /* Normal click */ },
 //                                onLongClick = { selectedBook = book }
@@ -547,6 +542,15 @@ fun HomeScreen(navController: NavController) {
                                     IconButton(
                                         onClick = {
                                             selectedNotes = item.watchListTitle
+                                            selectedItemWatchlistId = item.watchlistId
+                                            selectedItemNoEpisodesPage = item.noEpisodesPage
+                                            selectedItemWatchlistTitle = item.watchListTitle
+                                            selectedItemWatchlistType = item.type
+                                            selectedItemWatchlistCategory = item.category
+                                            selectedItemWatchlistNotes = item.notes
+                                            selectedItemWatchlistLink = item.link
+                                            selectedItemWatchlistCurrentEpisodesPage = item.seenPageEpisode
+                                            selectedItemWatchlistExpectedCompleteDate = item.expectedCompleteDate
                                             showSheet = true
                                         },
                                         modifier = Modifier

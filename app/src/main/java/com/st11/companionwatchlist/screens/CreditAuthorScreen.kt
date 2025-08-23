@@ -73,7 +73,10 @@ fun CreditAuthorScreen(navController: NavController) {
             )
 
             Text(
-                text = "Always Update your watchlist and never forget a show or book you want to checkout",
+                //set reminders,
+                text = "Keep track of everything you plan to watch or read with ease. Add titles, " +
+                        "track progress and" +
+                        " mark your favorite shows, books, and movies as completed—all in one place",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
@@ -92,11 +95,11 @@ fun CreditAuthorScreen(navController: NavController) {
 
             val iconCredits = listOf(
 //
-                "App icon was designed by Peerapak Takpho from Flaticon",
+                "App icon was designed by IconPai from Flaticon",
 
                 "App Screen image icons:",
-                "-No data Placeholder icon image designed by shmai from Flaticon",
-                "-No Search data placeholder icon image designed by kerismaker from Flaticon",
+                "-No data Placeholder icon image designed by iconixar from Flaticon",
+                "-No Search data placeholder icon image designed by Robert Angle from Flaticon",
 
                 )
 
