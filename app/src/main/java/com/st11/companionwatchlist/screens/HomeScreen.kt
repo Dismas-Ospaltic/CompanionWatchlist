@@ -338,9 +338,14 @@ fun HomeScreen(navController: NavController) {
                 .background(colorResource(id = R.color.white))
         ) {
 
-
-            Spacer(modifier = Modifier.height(8.dp)) // space between icon and content
-
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = paddingValues.calculateStartPadding(LocalLayoutDirection.current) + 12.dp,
+                        end = paddingValues.calculateEndPadding(LocalLayoutDirection.current) + 12.dp,
+                    )
+            ) {
 
             // Title
             Text(
@@ -378,9 +383,6 @@ fun HomeScreen(navController: NavController) {
                 ) {
 
 
-
-
-
                     // ✅ Show "No Data Available" if the list is empty initially or after filtering
                     if (watchList.isEmpty()) {
                         // No data available at the initial display  // loupe
@@ -394,7 +396,7 @@ fun HomeScreen(navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.watchingamovie), // Replace with your image in res/drawable
+                                    painter = painterResource(id = R.drawable.monitorcofeee), // Replace with your image in res/drawable
                                     contentDescription = "No Data",
                                     modifier = Modifier.size(120.dp)
                                 )
@@ -408,14 +410,9 @@ fun HomeScreen(navController: NavController) {
                         }
 
 
-
-
-
-
-
                     }                 // No data available after search
 
-                    else if (filteredWatchList.isEmpty()){
+                    else if (filteredWatchList.isEmpty()) {
                         // No data available after search
                         Box(
                             modifier = Modifier
@@ -426,7 +423,7 @@ fun HomeScreen(navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.loupe), // Replace with your image in res/drawable
+                                    painter = painterResource(id = R.drawable.searchmonitor), // Replace with your image in res/drawable
                                     contentDescription = "No Data",
                                     modifier = Modifier.size(120.dp)
                                 )
@@ -438,11 +435,9 @@ fun HomeScreen(navController: NavController) {
                                 )
                             }
                         }
-                    }else {
+                    } else {
                         for (index in filteredWatchList.indices) {
                             val item = filteredWatchList[index]
-
-
 
 
                             val hapticFeedback = LocalHapticFeedback.current
@@ -450,16 +445,22 @@ fun HomeScreen(navController: NavController) {
 
                             val onClick = {
                                 if (selectedWatchlistIds.value.isNotEmpty()) {
-                                    selectedWatchlistIds.value = selectedWatchlistIds.value.toMutableSet().apply {
-                                        if (contains(item.watchlistId)) remove(item.watchlistId) else add(item.watchlistId)
-                                    }
+                                    selectedWatchlistIds.value =
+                                        selectedWatchlistIds.value.toMutableSet().apply {
+                                            if (contains(item.watchlistId)) remove(item.watchlistId) else add(
+                                                item.watchlistId
+                                            )
+                                        }
                                 }
                             }
 
                             val onLongPress = {
-                                selectedWatchlistIds.value = selectedWatchlistIds.value.toMutableSet().apply {
-                                    if (contains(item.watchlistId)) remove(item.watchlistId) else add(item.watchlistId)
-                                }
+                                selectedWatchlistIds.value =
+                                    selectedWatchlistIds.value.toMutableSet().apply {
+                                        if (contains(item.watchlistId)) remove(item.watchlistId) else add(
+                                            item.watchlistId
+                                        )
+                                    }
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
 
@@ -467,7 +468,7 @@ fun HomeScreen(navController: NavController) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable{
+                                    .clickable {
 
                                     }
 //                                    .combinedClickable(
@@ -549,8 +550,10 @@ fun HomeScreen(navController: NavController) {
                                             selectedItemWatchlistCategory = item.category
                                             selectedItemWatchlistNotes = item.notes
                                             selectedItemWatchlistLink = item.link
-                                            selectedItemWatchlistCurrentEpisodesPage = item.seenPageEpisode
-                                            selectedItemWatchlistExpectedCompleteDate = item.expectedCompleteDate
+                                            selectedItemWatchlistCurrentEpisodesPage =
+                                                item.seenPageEpisode
+                                            selectedItemWatchlistExpectedCompleteDate =
+                                                item.expectedCompleteDate
                                             showSheet = true
                                         },
                                         modifier = Modifier
@@ -582,12 +585,7 @@ fun HomeScreen(navController: NavController) {
                             }
 
 
-
-
                         }
-
-
-
 
 
                     }
@@ -629,7 +627,7 @@ fun HomeScreen(navController: NavController) {
 
                 }
             }
-
+        }
 
         }
     }
@@ -677,7 +675,7 @@ fun HomeScreen(navController: NavController) {
 
                     if (showDialog) {
                         UpdateStatusPopup(
-                            onDismiss = { showDialog = false },
+                            onDismiss = { showDialog = false ; showSheet = false },
                             itemId = selectedItemWatchlistId!!,
                             currentPageEpisode = selectedItemWatchlistCurrentEpisodesPage!!.toInt()
                         )
@@ -706,7 +704,7 @@ fun HomeScreen(navController: NavController) {
 
                     if (showEditDialog) {
                         EditDetailsPopUp(
-                            onDismiss = {  showEditDialog = false },
+                            onDismiss = {  showEditDialog = false ; showSheet = false},
 //                            itemId = selectedNotes
                             watchListId = selectedItemWatchlistId!!,
                             watchListTitle = selectedItemWatchlistTitle!!,
@@ -924,7 +922,7 @@ fun HomeScreen(navController: NavController) {
 
     if (showUpdateStatusDialog) {
         AlertDialog(
-            onDismissRequest = { showUpdateStatusDialog = false },
+            onDismissRequest = { showUpdateStatusDialog = false ; showSheet = false},
             title = { Text("Mark Complete") },
             text = { Text("Mark as complete in watchlist?") },
             confirmButton = {
