@@ -2,15 +2,16 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp") version "2.0.20-1.0.25"
+//    id("com.google.devtools.ksp") version "2.0.20-1.0.25"
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
 }
 
 android {
-    namespace = "com.st11.companionwatchlist"
+    namespace = "com.d12.companionwatchlist"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.st11.companionwatchlist"
+        applicationId = "com.d12.companionwatchlist"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -58,6 +59,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
 
     //  this is for Material2 design
@@ -113,13 +115,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
 
-    //lottie file animations
-    implementation("com.github.LottieFiles:dotlottie-android:0.9.3")
-
-//    implementation("com.airbnb.android:lottie-compose:6.1.0")
-
-
-//json parsing
-    implementation("com.google.code.gson:gson:2.11.0")
+//    //lottie file animations
+//    implementation("com.github.LottieFiles:dotlottie-android:0.9.3")
+//
+////    implementation("com.airbnb.android:lottie-compose:6.1.0")
+//
+//
+////json parsing
+//    implementation("com.google.code.gson:gson:2.11.0")
 
 }

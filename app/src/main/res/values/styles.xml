@@ -2,7 +2,7 @@
 <resources>
     <style name="CustomDatePickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
         <!-- Change background color -->
-        <item name="android:colorBackground">@color/royal_blue_traditional</item>
+        <item name="android:colorBackground">@color/colorful</item>
 
         <!-- Change header text color -->
         <item name="android:textColorPrimary">@color/shadeBlue</item>

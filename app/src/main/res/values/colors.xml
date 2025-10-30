@@ -59,4 +59,25 @@
     <color name="tab_indicator">#f2f3f5</color>
 
 
+    <!-- Solid Colors -->
+    <color name="honeydew">#EFF8E2</color>
+    <color name="timberwolf">#CECFC7</color>
+    <color name="rose_quartz">#ADA8B6</color>
+    <color name="russian_violet">#23022E</color>
+    <color name="tekhelet">#573280</color>
+
+<!--    &lt;!&ndash; Optional: Transparent Versions &ndash;&gt;-->
+<!--    <color name="honeydew_transparent">#EFF8E2FF</color>-->
+<!--    <color name="timberwolf_transparent">#CECFC7FF</color>-->
+<!--    <color name="rose_quartz_transparent">#ADA8B6FF</color>-->
+<!--    <color name="russian_violet_transparent">#23022EFF</color>-->
+<!--    <color name="tekhelet_transparent">#573280FF</color>-->
+
+<!--    &lt;!&ndash; Gradients (used in drawable XMLs) &ndash;&gt;-->
+<!--    &lt;!&ndash; Example: you can create drawable/gradient_bg.xml and reference these &ndash;&gt;-->
+<!--    <color name="gradient_start">@color/honeydew</color>-->
+<!--    <color name="gradient_center">@color/rose_quartz</color>-->
+<!--    <color name="gradient_end">@color/tekhelet</color>-->
+
+
 </resources>
