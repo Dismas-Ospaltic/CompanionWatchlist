@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d12.companionwatchlist.model.ProgressEntity
 import com.d12.companionwatchlist.repository.ProgressRepository
-import com.d12.companionwatchlist.repository.WatchListRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

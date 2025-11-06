@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import com.d12.companionwatchlist.R
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,7 +18,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.d12.companionwatchlist.utils.StatusBarColor
 import com.d12.companionwatchlist.screens.components.CompanionInfoSection
-import com.d12.companionwatchlist.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,12 +52,14 @@ fun SettingScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 10.dp, vertical = 8.dp)
+//                .padding(horizontal = 16.dp, vertical = 12.dp)
                 .verticalScroll(rememberScrollState()) // ✅ Scrollable content
         ) {
 
             CompanionInfoSection(
-                privacyUrl = "https://example.com/privacy",
+                navController,
+                privacyUrl = "https://injraapps.github.io/CompanionWatchlist/policy.html",
                 appName = "Companion Watchlist",
                 aboutText = "With Companion Watchlist Keep track of" +
                         " everything you plan to watch or read with ease." +

@@ -9,6 +9,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import androidx.compose.animation.*
 import androidx.compose.ui.Modifier
+import com.d12.companionwatchlist.screens.AboutAppScreen
 import com.d12.companionwatchlist.screens.HomeScreen
 import com.d12.companionwatchlist.screens.AddToWatchlistScreen
 import com.d12.companionwatchlist.screens.SettingScreen
@@ -21,7 +22,11 @@ sealed class Screen(val route: String) {
     object AddToWatchlist : Screen("addToWatchlist")
 
 
-    object  CreditAuthor : Screen("CreditAuthor")
+//    object  AboutApp : Screen("aboutApp")
+
+    object AboutApp : Screen("aboutApp/{appDesc}") {
+        fun createRoute(appDesc: String) = "aboutApp/$appDesc"
+    }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -40,6 +45,9 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier) {
         composable(Screen.Home.route) { HomeScreen(navController) }
         composable(Screen.Settings.route) { SettingScreen(navController) }
         composable(Screen.AddToWatchlist.route) { AddToWatchlistScreen(navController) }
-
+        composable(Screen.AboutApp.route) { backStackEntry ->
+            val appDesc = backStackEntry.arguments?.getString("appDesc") ?: "Unknown"
+            AboutAppScreen(navController, appDesc)
+        }
     }
 }

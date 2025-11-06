@@ -28,7 +28,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 
 import java.util.Locale
-import com.d12.companionwatchlist.R
 
 
 @Composable

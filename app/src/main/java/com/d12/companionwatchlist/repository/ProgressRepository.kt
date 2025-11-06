@@ -5,11 +5,7 @@ import com.d12.companionwatchlist.data.local.ProgressDao
 import com.d12.companionwatchlist.data.local.WatchListDao
 import com.d12.companionwatchlist.model.ProgressEntity
 import kotlinx.coroutines.flow.Flow
-//import javax.inject.Inject
-//import javax.inject.Singleton
-//
-//@Singleton
-//class ProgressRepository @Inject constructor(
+
 
     class ProgressRepository(
     private val progressDao: ProgressDao,

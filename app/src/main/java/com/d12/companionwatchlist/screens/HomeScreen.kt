@@ -17,16 +17,12 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -36,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.d12.companionwatchlist.R
 import com.d12.companionwatchlist.navigation.Screen
 import com.d12.companionwatchlist.screens.components.CircularPercentageBar
 import com.d12.companionwatchlist.screens.components.EditDetailsPopUp
@@ -56,7 +53,6 @@ import compose.icons.fontawesomeicons.solid.Pen
 import compose.icons.fontawesomeicons.solid.Plus
 import compose.icons.fontawesomeicons.solid.ShareAlt
 import org.koin.androidx.compose.koinViewModel
-import com.d12.companionwatchlist.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -372,38 +368,133 @@ fun HomeScreen(navController: NavController) {
                             }
                         }
                     } else {
+//                        for (index in filteredWatchList.indices) {
+//                            val item = filteredWatchList[index]
+//
+//                            // Book row
+//                            Column(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .clickable {
+//                                        selectedItemWatchlistId = item.watchlistId
+//                                        selectedItemNoEpisodesPage = item.noEpisodesPage
+//                                        selectedItemWatchlistTitle = item.watchListTitle
+//                                        selectedItemWatchlistType = item.type
+//                                        selectedItemWatchlistCategory = item.category
+//                                        selectedItemWatchlistNotes = item.notes
+//                                        selectedItemWatchlistLink = item.link
+//                                        selectedItemWatchlistCurrentEpisodesPage =
+//                                            item.seenPageEpisode
+//                                        selectedItemWatchlistExpectedCompleteDate =
+//                                            item.expectedCompleteDate
+//                                        showSheet = true
+//                                    }
+//                            ) {
+//
+//                                Spacer(Modifier.height(4.dp))
+//                                Text(
+//                                    text = item.watchListTitle,
+//                                    style = MaterialTheme.typography.titleMedium.copy(
+//                                        fontWeight = FontWeight.SemiBold
+//                                    )
+//                                )
+//                                Spacer(Modifier.height(2.dp))
+//                                Text(
+//                                    text = "expected Completion Date: ${formatDateToReadable(item.expectedCompleteDate)}",
+//                                    color = colorResource(id = R.color.text_gray),
+//                                )
+//                                Spacer(Modifier.height(4.dp))
+//                                Row(
+//                                    Modifier.fillMaxWidth(),
+//                                    horizontalArrangement = Arrangement.SpaceBetween
+//                                ) {
+//                                    Text(
+//
+//                                        if (item.type == "Tv Show") "Episodes: ${item.noEpisodesPage}" else "Pages:  ${item.noEpisodesPage}",
+//                                        style = MaterialTheme.typography.bodyMedium
+//                                    )
+//                                    Text(
+//                                        "Type: ${item.type}",
+//                                        style = MaterialTheme.typography.bodyMedium
+//                                    )
+//                                    Text(
+//                                        "Genre: ${item.category}",
+//                                        style = MaterialTheme.typography.bodyMedium
+//                                    )
+//                                }
+//                                Spacer(Modifier.height(4.dp))
+//
+//
+//                                Row(
+//                                    Modifier.fillMaxWidth(),
+//                                    horizontalArrangement = Arrangement.Start
+//                                ) {
+//
+//                                    // Calculate progress
+//                                    val viewPercentage = if (item.seenPageEpisode > 0) {
+//                                        (item.seenPageEpisode.toFloat()) / item.noEpisodesPage.toFloat()
+//                                    } else 0f
+//
+//                                    CircularPercentageBar(
+//                                        percentage = viewPercentage.coerceIn(0f, 1f),
+//                                    )
+//
+//
+//                                    Surface(
+//                                        shape = RoundedCornerShape(12.dp),
+//                                        shadowElevation = 4.dp,
+//                                        color = colorResource(id = R.color.honeydew),
+//                                        modifier = Modifier
+//                                            .width(100.dp)
+//                                            .clickable {
+//                                                moreNoteDialog = true
+//                                                selectedItemWatchlistNotes = item.notes
+//                                            }
+//                                            .padding(8.dp)
+//                                    ) {
+//                                        Column(
+//                                            horizontalAlignment = Alignment.CenterHorizontally,
+//                                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
+//                                        ) {
+//                                            Icon(
+//                                                imageVector = FontAwesomeIcons.Solid.InfoCircle,
+//                                                contentDescription = "More Notes",
+//                                                tint = colorResource(id = R.color.russian_violet),
+//                                                modifier = Modifier.size(24.dp)
+//                                            )
+//                                            Text(
+//                                                text = "More Notes",
+//                                                color = colorResource(id = R.color.russian_violet),
+//                                                fontSize = 12.sp,
+//                                                fontWeight = FontWeight.Medium
+//                                            )
+//                                        }
+//                                    }
+//
+//                                }
+//                            }
+//
+//                            // Divider except after last item
+//                            if (index < books.lastIndex) {
+//                                HorizontalDivider(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .padding(vertical = 8.dp),
+//                                    thickness = 1.dp,
+//                                    color = Color(0xFFE0E0E0)
+//                                )
+//                            }
+//
+//
+//                        }
                         for (index in filteredWatchList.indices) {
                             val item = filteredWatchList[index]
 
-
-                            val hapticFeedback = LocalHapticFeedback.current
-                            val isSelected = selectedWatchlistIds.value.contains(item.watchlistId)
-
-                            val onClick = {
-                                if (selectedWatchlistIds.value.isNotEmpty()) {
-                                    selectedWatchlistIds.value =
-                                        selectedWatchlistIds.value.toMutableSet().apply {
-                                            if (contains(item.watchlistId)) remove(item.watchlistId) else add(
-                                                item.watchlistId
-                                            )
-                                        }
-                                }
-                            }
-
-                            val onLongPress = {
-                                selectedWatchlistIds.value =
-                                    selectedWatchlistIds.value.toMutableSet().apply {
-                                        if (contains(item.watchlistId)) remove(item.watchlistId) else add(
-                                            item.watchlistId
-                                        )
-                                    }
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                            }
-
-                            // Book row
-                            Column(
+                            // Watchlist Card
+                            Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(vertical = 6.dp)
                                     .clickable {
                                         selectedItemWatchlistId = item.watchlistId
                                         selectedItemNoEpisodesPage = item.noEpisodesPage
@@ -412,149 +503,99 @@ fun HomeScreen(navController: NavController) {
                                         selectedItemWatchlistCategory = item.category
                                         selectedItemWatchlistNotes = item.notes
                                         selectedItemWatchlistLink = item.link
-                                        selectedItemWatchlistCurrentEpisodesPage =
-                                            item.seenPageEpisode
-                                        selectedItemWatchlistExpectedCompleteDate =
-                                            item.expectedCompleteDate
+                                        selectedItemWatchlistCurrentEpisodesPage = item.seenPageEpisode
+                                        selectedItemWatchlistExpectedCompleteDate = item.expectedCompleteDate
                                         showSheet = true
-                                    }
-//                                    .combinedClickable(
-////                                        onClick = onClick,
-////                                        onLongClick = onLongPress
-//                                    )
-//                            .combinedClickable(
-//                                onClick = { /* Normal click */ },
-//                                onLongClick = { selectedBook = book }
-//                                // ✅ show actions
-//                            )
+                                    },
+                                shape = RoundedCornerShape(16.dp),
+                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = colorResource(id = R.color.honeydew)
+                                )
                             ) {
-                                if (isSelected) {
-                                    Checkbox(
-                                        checked = true,
-                                        onCheckedChange = { onLongPress() },
-                                        colors = CheckboxDefaults.colors(
-                                            checkedColor = colorResource(id = R.color.teal_700),
-                                            uncheckedColor = colorResource(id = R.color.darkLight),
-                                            checkmarkColor = colorResource(id = R.color.white)
+                                Column(modifier = Modifier.padding(12.dp)) {
+
+                                    Text(
+                                        text = item.watchListTitle,
+                                        style = MaterialTheme.typography.titleMedium.copy(
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = colorResource(id = R.color.russian_violet)
                                         )
                                     )
-                                }
-                                Spacer(Modifier.height(4.dp))
-                                Text(
-                                    text = item.watchListTitle,
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                )
-                                Spacer(Modifier.height(2.dp))
-                                Text(
-                                    text = "expected Completion Date: ${formatDateToReadable(item.expectedCompleteDate)}",
-                                    color = colorResource(id = R.color.text_gray),
-                                )
-                                Spacer(Modifier.height(4.dp))
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
+
+                                    Spacer(Modifier.height(2.dp))
+
                                     Text(
-
-
-                                        if (item.type == "Tv Show") "Episodes: ${item.noEpisodesPage}" else "Pages:  ${item.noEpisodesPage}",
-                                        style = MaterialTheme.typography.bodyMedium
+                                        text = "Expected Completion: ${formatDateToReadable(item.expectedCompleteDate)}",
+                                        style = MaterialTheme.typography.bodySmall.copy(
+                                            color = colorResource(id = R.color.text_gray)
+                                        )
                                     )
-                                    Text(
-                                        "Type: ${item.type}",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Text(
-                                        "Genre: ${item.category}",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                                Spacer(Modifier.height(4.dp))
 
+                                    Spacer(Modifier.height(8.dp))
 
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Start
-                                ) {
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            if (item.type == "Tv Show") "Episodes: ${item.noEpisodesPage}" else "Pages: ${item.noEpisodesPage}",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text("Type: ${item.type}", style = MaterialTheme.typography.bodyMedium)
+                                        Text("Genre: ${item.category}", style = MaterialTheme.typography.bodyMedium)
+                                    }
 
-                                    // Calculate progress
-                                    val viewPercentage = if (item.seenPageEpisode > 0) {
-                                        (item.seenPageEpisode.toFloat()) / item.noEpisodesPage.toFloat()
-                                    } else 0f
+                                    Spacer(Modifier.height(10.dp))
 
-                                    CircularPercentageBar(
-                                        percentage = viewPercentage.coerceIn(0f, 1f),
-                                    )
-//                                    IconButton(
-//                                        onClick = {
-//                                            moreNoteDialog = true
-////                                            selectedNotes = item.watchListTitle
-//                                            selectedItemWatchlistNotes = item.notes
-//                                        },
-//                                        modifier = Modifier
-//                                            .size(56.dp) // total button size
-//                                            .clip(RoundedCornerShape(16.dp)) // round corners
-//                                    ) {
-//                                        // White Icon on top
-//                                        Icon(
-//                                            imageVector = FontAwesomeIcons.Solid.InfoCircle,
-//                                            contentDescription = "Info",
-//                                            tint = colorResource(id = R.color.russian_violet),
-//                                            modifier = Modifier
-//                                                .size(28.dp)
-//                                        )
-//
-//                                    }
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        // Progress Indicator
+                                        val viewPercentage = if (item.seenPageEpisode > 0) {
+                                            (item.seenPageEpisode.toFloat()) / item.noEpisodesPage.toFloat()
+                                        } else 0f
 
+                                        CircularPercentageBar(
+                                            percentage = viewPercentage.coerceIn(0f, 1f)
+                                        )
 
-                                    Surface(
-                                        shape = RoundedCornerShape(12.dp),
-                                        shadowElevation = 4.dp,
-                                        color = colorResource(id = R.color.honeydew),
-                                        modifier = Modifier
-                                            .width(100.dp)
-                                            .clickable {
+                                        // More Notes Button
+                                        Button(
+                                            onClick = {
                                                 moreNoteDialog = true
                                                 selectedItemWatchlistNotes = item.notes
-                                            }
-                                            .padding(8.dp)
-                                    ) {
-                                        Column(
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
+                                            },
+                                            shape = RoundedCornerShape(12.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = colorResource(id = R.color.russian_violet),
+                                                contentColor = colorResource(id = R.color.honeydew)
+                                            ),
+                                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                                         ) {
                                             Icon(
                                                 imageVector = FontAwesomeIcons.Solid.InfoCircle,
-                                                contentDescription = "More Notes",
-                                                tint = colorResource(id = R.color.russian_violet),
-                                                modifier = Modifier.size(24.dp)
+                                                contentDescription = "reference note",
+                                                modifier = Modifier.size(18.dp)
                                             )
+                                            Spacer(modifier = Modifier.width(6.dp))
                                             Text(
                                                 text = "More Notes",
-                                                color = colorResource(id = R.color.russian_violet),
-                                                fontSize = 12.sp,
-                                                fontWeight = FontWeight.Medium
+                                                style = MaterialTheme.typography.bodySmall.copy(
+                                                    fontWeight = FontWeight.Medium
+                                                )
                                             )
                                         }
                                     }
-
                                 }
                             }
 
-                            // Divider except after last item
-                            if (index < books.lastIndex) {
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 8.dp),
-                                    thickness = 1.dp,
-                                    color = Color(0xFFE0E0E0)
-                                )
+                            // Divider between cards
+                            if (index < filteredWatchList.lastIndex) {
+                                Spacer(modifier = Modifier.height(6.dp))
                             }
-
-
                         }
 
 
@@ -620,7 +661,8 @@ fun HomeScreen(navController: NavController) {
                             onDismiss = { showDialog = false ; showSheet = false },
                             itemId = selectedItemWatchlistId!!,
                             totalEpisodes = selectedItemNoEpisodesPage!!,
-                            currentPageEpisode = selectedItemWatchlistCurrentEpisodesPage!!.toInt()
+                            currentPageEpisode = selectedItemWatchlistCurrentEpisodesPage!!.toInt(),
+                            watchlistType = selectedItemWatchlistType!!
                         )
 
 
@@ -776,16 +818,6 @@ fun HomeScreen(navController: NavController) {
                              watchListViewModel.deleteWatchListById(watchlistId)
                          }
 
-//                        val wishStatus = wish?.wishStatus
-//                        if (wishStatus != "Purchased") {
-//                            if (wish != null) {
-//                                wishlistViewModel.updateWishStatus(
-//                                    wishId,
-//                                    "Purchased",
-//                                    formatDate(System.currentTimeMillis())
-//                                )
-//                            }}
-
 
                     }
                     Toast.makeText(
@@ -824,18 +856,6 @@ fun HomeScreen(navController: NavController) {
                 TextButton(onClick = {
                     watchListViewModel.deleteWatchListById(itemId = selectedItemWatchlistId!!)
 
-//                    for (wishId in selectedWishes.value) {
-//                        val wish = wishlist.find { it.wishId == wishId }
-//                        val wishStatus = wish?.wishStatus
-//                        if (wishStatus != "Purchased") {
-//                            if (wish != null) {
-//                                wishlistViewModel.updateWishStatus(
-//                                    wishId,
-//                                    "Purchased",
-//                                    formatDate(System.currentTimeMillis())
-//                                )
-//                            }}
-//                    }
                     Toast.makeText(
                         context,
                         "Item Delete",
@@ -959,19 +979,4 @@ fun HomeScreen(navController: NavController) {
         }
     }
 
-
-//@Composable
-//fun ActionItem(icon: ImageVector, text: String, onClick: () -> Unit) {
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(vertical = 8.dp)
-//            .clickable { onClick() },
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        Icon(icon, contentDescription = text, tint = Color.Black, modifier = Modifier.size(20.dp))
-//        Spacer(Modifier.width(12.dp))
-//        Text(text, style = MaterialTheme.typography.bodyLarge)
-//    }
-//}
 

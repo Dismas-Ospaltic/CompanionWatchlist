@@ -25,9 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.d12.companionwatchlist.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.d12.companionwatchlist.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
